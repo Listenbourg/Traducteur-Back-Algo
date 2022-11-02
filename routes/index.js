@@ -87,7 +87,8 @@ async function translateString(from, to, text) {
     /**
      * Add to our new translated words array
      */
-    DEBUG && console.log("INDEX : Final word is : " + correspond);
+    DEBUG &&
+      console.log("INDEX : Final word for " + word + " is : " + correspond);
     DEBUG && console.log("----------------");
 
     newTranslation.push(correspond);
