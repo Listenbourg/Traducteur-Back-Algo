@@ -8,7 +8,7 @@ router.get("/", function (req, res, next) {
   res.json({ status: 200 });
 });
 
-router.post("/translate", function (req, res, next) {
+router.post("/translate", async function (req, res, next) {
   let from = req.body.from.toLowerCase();
   let to = req.body.to.toLowerCase();
   let text = req.body.text.toLowerCase();
@@ -17,10 +17,12 @@ router.post("/translate", function (req, res, next) {
   let status = 200;
   switch (from) {
     case "fr":
-      if (to == "lis") translatedText = translateFromFrench(from, to, text);
+      if (to == "lis")
+        translatedText = await translateFromFrench(from, to, text);
       break;
     case "lis":
-      if (to == "fr") translatedText = translateFromListenbourg(from, to, text);
+      if (to == "fr")
+        translatedText = await translateFromListenbourg(from, to, text);
       break;
     default:
       break;
@@ -82,22 +84,14 @@ async function findSimilarity(from, to, word) {
 
 async function getCorrespondantWord(from, to, word) {
   let correspondant = await axios.get(
-    BASE_URL +
-      "/translations?filters[language][$contains]=" +
-      from +
-      "#" +
-      to +
-      "&filters[language][$contains]=" +
-      to +
-      "#" +
-      from +
-      "&filters[word][$contains]=" +
-      word
+    BASE_URL + "/translations?filters[word][$contains]=" + word
   );
 
   if (correspondant.data.data.length == 0) return null;
 
   let datas = correspondant.data.data;
+
+  console.log(datas);
 
   let allScore = [];
   if (datas.length > 1) {
@@ -141,9 +135,7 @@ async function translateFromFrench(from, to, text) {
     newTranslation.push(correspond);
   }
 
-  console.log(newTranslation.join(" "));
-
-  return text;
+  return newTranslation.join(" ");
 }
 
 function translateFromListenbourg(from, to, text) {
