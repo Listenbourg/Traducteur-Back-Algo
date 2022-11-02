@@ -19,6 +19,7 @@ app.use(
       "http://localhost:3000",
       "http://localhost:3001",
       "http://51.210.104.99:1658",
+      "*",
     ],
   })
 );
