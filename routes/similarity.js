@@ -1,7 +1,7 @@
 const axios = require("axios");
 const BASE_URL = "http://51.210.104.99:1337/api";
 var stringSimilarity = require("string-similarity");
-const { DEBUG } = require(".");
+const DEBUG = false;
 
 module.exports = {
   findSimilarity,

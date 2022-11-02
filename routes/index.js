@@ -6,10 +6,6 @@ const { findSimilarity } = require("./similarity");
 
 const DEBUG = false;
 
-module.exports = {
-  DEBUG,
-};
-
 router.get("/", function (req, res, next) {
   res.json({ status: 200 });
 });
@@ -51,6 +47,7 @@ router.post("/translate", async function (req, res, next) {
       status: 404,
       response: "Error during translation processing",
     });
+    return;
   }
 
   res.json({ status: 200, response: translatedText });

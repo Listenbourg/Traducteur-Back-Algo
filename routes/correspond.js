@@ -2,7 +2,7 @@ const axios = require("axios");
 const { getBasicPart, getTranslatedPart } = require("./similarity");
 const BASE_URL = "http://51.210.104.99:1337/api";
 var stringSimilarity = require("string-similarity");
-const { DEBUG } = require(".");
+const DEBUG = false;
 
 module.exports = {
   getCorrespondantWord,
@@ -13,9 +13,12 @@ async function getCorrespondantWord(from, to, word) {
   /**
    * Fetch all words from the database thats contains the basic word
    */
+  let part = from === "fr" ? "base" : "translation";
   let correspondant = await axios.get(
     BASE_URL +
-      "/translations?filters[base][$contains]=" +
+      "/translations?filters[" +
+      part +
+      "][$contains]=" +
       word +
       "&pagination[start]=0&pagination[limit]=1000000"
   );
@@ -57,7 +60,7 @@ async function getCorrespondantWord(from, to, word) {
      * If only one word, return it
      */
   } else {
-    let currentWord = datas[0].attributes.word.split("#")[1];
+    let currentWord = getTranslatedPart(from, datas[0]);
     return currentWord;
   }
 }
