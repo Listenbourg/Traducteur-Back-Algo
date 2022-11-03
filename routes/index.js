@@ -11,9 +11,9 @@ router.get("/", function (req, res, next) {
 });
 
 router.get("/translate", async function (req, res, next) {
-  let from = req.body.from.toLowerCase();
-  let to = req.body.to.toLowerCase();
-  let text = req.body.text.toLowerCase();
+  let from = req.query.from?.toLowerCase() || "";
+  let to = req.query.to?.toLowerCase() || "";
+  let text = req.query.text?.toLowerCase() || "";
 
   const AVAILABLE_FROM = ["fr", "lis"];
   const AVAILABLE_TO = ["fr", "lis"];
@@ -27,6 +27,7 @@ router.get("/translate", async function (req, res, next) {
         " is not an available language. Please use one of : " +
         AVAILABLE_FROM.join(", "),
     });
+    return;
   }
 
   if (!AVAILABLE_TO.includes(to)) {
@@ -34,10 +35,11 @@ router.get("/translate", async function (req, res, next) {
       status: 404,
       response:
         "To : " +
-        from +
+        to +
         " is not an available language. Please use one of : " +
         AVAILABLE_FROM.join(", "),
     });
+    return;
   }
 
   let translatedText = await translateString(from, to, text);
