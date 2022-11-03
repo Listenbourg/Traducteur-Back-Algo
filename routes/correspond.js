@@ -52,15 +52,15 @@ async function getCorrespondantWord(from, to, word) {
     /**
      * If the score is too low, return base word
      */
-    if (matches.bestMatch.rating < 0.2) return word;
+    if (matches.bestMatch.rating < 0.2) return { word: `#${word}#`, score: -1 };
 
-    return translatedPart;
+    return { word: translatedPart, score: matches.bestMatch.rating };
 
     /**
      * If only one word, return it
      */
   } else {
     let currentWord = getTranslatedPart(from, datas[0]);
-    return currentWord;
+    return { word: currentWord, score: 1 };
   }
 }

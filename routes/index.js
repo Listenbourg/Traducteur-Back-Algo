@@ -15,44 +15,7 @@ router.get("/translate", async function (req, res, next) {
   let to = req.query.to?.toLowerCase() || "";
   let text = req.query.text?.toLowerCase() || "";
 
-  const AVAILABLE_FROM = ["fr", "lis"];
-  const AVAILABLE_TO = ["fr", "lis"];
-
-  if (!AVAILABLE_FROM.includes(from)) {
-    res.json({
-      status: 404,
-      response:
-        "From : " +
-        from +
-        " is not an available language. Please use one of : " +
-        AVAILABLE_FROM.join(", "),
-    });
-    return;
-  }
-
-  if (!AVAILABLE_TO.includes(to)) {
-    res.json({
-      status: 404,
-      response:
-        "To : " +
-        to +
-        " is not an available language. Please use one of : " +
-        AVAILABLE_FROM.join(", "),
-    });
-    return;
-  }
-
-  let translatedText = await translateString(from, to, text);
-
-  if (!translatedText) {
-    res.json({
-      status: 404,
-      response: "Error during translation processing",
-    });
-    return;
-  }
-
-  res.json({ status: 200, response: translatedText });
+  await handleRequest(res, from, to, text);
 });
 
 router.post("/translate", async function (req, res, next) {
@@ -60,6 +23,10 @@ router.post("/translate", async function (req, res, next) {
   let to = req.body.to.toLowerCase();
   let text = req.body.text.toLowerCase();
 
+  await handleRequest(res, from, to, text);
+});
+
+async function handleRequest(res, from, to, text) {
   const AVAILABLE_FROM = ["fr", "lis"];
   const AVAILABLE_TO = ["fr", "lis"];
 
@@ -87,6 +54,12 @@ router.post("/translate", async function (req, res, next) {
 
   let translatedText = await translateString(from, to, text);
 
+  let wordsArray = translatedText.map((obj) => {
+    return obj.word;
+  });
+
+  let brutString = wordsArray.join(" ");
+
   if (!translatedText) {
     res.json({
       status: 404,
@@ -95,8 +68,13 @@ router.post("/translate", async function (req, res, next) {
     return;
   }
 
-  res.json({ status: 200, response: translatedText });
-});
+  res.json({
+    status: 200,
+    response: brutString.replaceAll("#", ""),
+    alt_response: brutString,
+    detail_reponse: JSON.stringify(translatedText),
+  });
+}
 
 /**
  *
@@ -138,6 +116,6 @@ async function translateString(from, to, text) {
   /**
    * Join all words to create string and return it
    */
-  return newTranslation.join(" ");
+  return newTranslation;
 }
 module.exports = router;

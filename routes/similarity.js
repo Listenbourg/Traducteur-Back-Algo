@@ -46,9 +46,9 @@ async function findSimilarity(from, to, word) {
   /**
    * If the score is too low, return base word
    */
-  if (matches.bestMatch.rating < 0.2) return word;
+  if (matches.bestMatch.rating < 0.3) return { word: `#${word}#`, score: -1 };
 
-  return translatedPart;
+  return { word: translatedPart, score: matches.bestMatch.rating };
 }
 
 /**
