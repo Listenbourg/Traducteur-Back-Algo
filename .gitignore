@@ -115,6 +115,4 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-cert.perm
-csr.perm
-key.perm
+*.pem
