@@ -30,6 +30,8 @@ async function handleRequest(res, from, to, text) {
   const AVAILABLE_FROM = ["fr", "lis"];
   const AVAILABLE_TO = ["fr", "lis"];
 
+  console.log(text);
+
   if (!AVAILABLE_FROM.includes(from)) {
     res.json({
       status: 404,
